@@ -134,7 +134,7 @@ jobs:
           # Basic optimizations
           echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
           # Enable JOYDEV
-          echo "CONFIG_JOYDEV=y" >> "$CONFIG_FILE"
+          echo "CONFIG_INPUT_JOYDEV=y" >> "$CONFIG_FILE"
 
 
       # - name: "🛠 Apply kernel patches"
