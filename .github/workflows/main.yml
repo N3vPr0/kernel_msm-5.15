@@ -121,21 +121,33 @@ jobs:
            ${{ env.kernelDir }}/${{ env.kernelName }}/build.config.gki.aarch64
   
       - name: "⚙️ Configure kernel"
-        working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
+        working-directory: ./${{env.kernelDir }}/${{ env.kernelName}}
         run: |
-          # Define the config file path
-          CONFIG_FILE="arch/arm64/configs/${{ env.DEFCONFIG_NAME }}"
-          
-          # Set localversion
-          if [ -n "${{ github.event.inputs.localVersion }}" ]; then
-            echo "CONFIG_LOCALVERSION=\"${{ github.event.inputs.localVersion }}\"" >> "$CONFIG_FILE"
-          fi
-          
-          # Basic optimizations
-          echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
-          # Enable JOYDEV in the working .config after defconfig
-          scripts/config --file out/.config --enable CONFIG_INPUT
-          scripts/config --file out/.config --enable CONFIG_INPUT_JOYDEV
+         # =======================================================
+         # Define the config file path
+         # =======================================================
+         CONFIG_FILE="arch/arm64/configs/${{ env.DEFCONFIG_NAME }}"
+
+         # =======================================================
+         # Set localversion if provided
+         # =======================================================
+         if [ -n "${{ github.event.inputs.localVersion }}" ]; then
+           echo "CONFIG_LOCALVERSION=\"${{ github.event.inputs.localVersion }}\"" >> "$CONFIG_FILE"
+         fi
+
+         # =======================================================
+         # Basic optimizations
+         # =======================================================
+         echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
+
+         # =======================================================
+         # Enable INPUT and JOYDEV using scripts/config directly
+         # This requires .config to exist, so make olddefconfig first
+         # =======================================================
+         make -C . O=${{ env.OUT_DIR }} ${ { env.DEFCONFIG_NAME } }_defconfig
+         ./scripts/config --file ${{ env.OUT_DIR }}/.config --enable CONFIG_INPUT
+         ./scripts/config --file ${{ env.OUT_DIR }}/.config --enable CONFIG_INPUT_JOYDEV
+         make -C . O=${{ env.OUT_DIR }} olddefconfig
 
       # - name: "🛠 Apply kernel patches"
       #  working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
