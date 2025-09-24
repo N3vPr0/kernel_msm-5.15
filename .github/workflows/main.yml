@@ -134,9 +134,9 @@ jobs:
           # Basic optimizations
           echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
       - name: Enable JOYDEV
+          working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
         run: |
-          sed -i 's/# CONFIG_JOYDEV is not set/CONFIG_JOYDEV=y/' arch/arm64/configs/gki_defconfig
-
+          sed -i 's/# CONFIG_JOYDEV is not set/CONFIG_JOYDEV=y/' arch/arm64/configs/${{ env.DEFCONFIG_NAME }}
 
 
       # - name: "🛠 Apply kernel patches"
