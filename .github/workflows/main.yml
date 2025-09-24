@@ -144,7 +144,7 @@ jobs:
          # Enable INPUT and JOYDEV using scripts/config directly
          # This requires .config to exist, so make olddefconfig first
          # =======================================================
-         make -C . O=${{ env.OUT_DIR }} ${ { env.DEFCONFIG_NAME } }_defconfig
+         make -C . O=${{ env.OUT_DIR }} ${{ env.DEFCONFIG_NAME }}_defconfig
          ./scripts/config --file ${{ env.OUT_DIR }}/.config --enable CONFIG_INPUT
          ./scripts/config --file ${{ env.OUT_DIR }}/.config --enable CONFIG_INPUT_JOYDEV
          make -C . O=${{ env.OUT_DIR }} olddefconfig
