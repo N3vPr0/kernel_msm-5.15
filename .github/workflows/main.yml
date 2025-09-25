@@ -120,12 +120,12 @@ jobs:
            -e '/^MODULES_LIST=/d' \
            ${{ env.kernelDir }}/${{ env.kernelName }}/build.config.gki.aarch64
            # Force-enable JOYDEV after defconfig
-          echo '
-          # Force-enable JOYDEV after defconfig is applied
-          POST_DEFCONFIG_CMDS+="
-          ${ROOT_DIR}/common/scripts/config --file ${OUT_DIR}/.config --enable CONFIG_INPUT
-          ${ROOT_DIR}/common/scripts/config --file ${OUT_DIR}/.config --enable CONFIG_INPUT_JOYDEV
-          make -C . O=${OUT_DIR} olddefconfig"' >> ${{ env.kernelDir }}/${{ env.kernelName }}/build.config.gki.aarch64
+           echo '
+           # Force-enable JOYDEV after defconfig is applied
+           POST_DEFCONFIG_CMDS+="
+           ${ROOT_DIR}/scripts/config --file ${OUT_DIR}/.config --enable CONFIG_INPUT
+           ${ROOT_DIR}/scripts/config --file ${OUT_DIR}/.config --enable CONFIG_INPUT_JOYDEV
+           make -C . O=${OUT_DIR} olddefconfig"' >> ${{ env.kernelDir }}/${{ env.kernelName }}/build.config.gki.aarch64
 
       - name: "⚙️ Configure kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
