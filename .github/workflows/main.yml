@@ -119,6 +119,13 @@ jobs:
            -e '/^MODULES_ORDER=/d' \
            -e '/^MODULES_LIST=/d' \
            ${{ env.kernelDir }}/${{ env.kernelName }}/build.config.gki.aarch64
+           # Force-enable JOYDEV after defconfig
+          echo '
+          # Force-enable JOYDEV after defconfig is applied
+          POST_DEFCONFIG_CMDS+="
+          ${ROOT_DIR}/common/scripts/config --file ${OUT_DIR}/.config --enable CONFIG_INPUT
+          ${ROOT_DIR}/common/scripts/config --file ${OUT_DIR}/.config --enable CONFIG_INPUT_JOYDEV
+          make -C . O=${OUT_DIR} olddefconfig"' >> ${{ env.kernelDir }}/${{ env.kernelName }}/build.config.gki.aarch64
 
       - name: "⚙️ Configure kernel"
         working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
@@ -134,15 +141,7 @@ jobs:
          # Basic optimizations
          echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
 
-         # Apply the defconfig for ARM64
-         make -C . O=${{ env.OUT_DIR }} ARCH=arm64 ${{ env.DEFCONFIG_NAME }}
-
-         # Enable INPUT and JOYDEV in the resulting .config
-         ./scripts/config --file ${{ env.OUT_DIR }}/.config --enable CONFIG_INPUT
-         ./scripts/config --file ${{ env.OUT_DIR }}/.config --enable CONFIG_INPUT_JOYDEV
-
-         # Rebuild olddefconfig to propagate new options
-         make -C . O=${{ env.OUT_DIR }} ARCH=arm64 olddefconfig
+         
 
       # - name: "🛠 Apply kernel patches"
       #  working-directory: ./${{ env.kernelDir }}/${{ env.kernelName }}
